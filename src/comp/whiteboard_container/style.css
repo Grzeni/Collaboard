@@ -39,6 +39,7 @@
     align-content: right;
 }
 
+
 .p-radio {
     margin-left: 1%;
     margin-right: 1%;
@@ -75,7 +76,6 @@
 
 .people-list-dropdown a:hover {
     background-color: #ddd;
-
 }
 
 .people-list-dropdown a {
@@ -90,5 +90,10 @@
 }
 
 .people-online-list-dropdown:hover .dropdown-list-btn {background-color: #3e8e41;}
+
+.text-input-selection {
+    margin-left: 1%;
+    margin-right: 1%;
+}
 
 

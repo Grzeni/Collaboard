@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {MdFileDownload, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdEdit, MdFormatColorText, MdFormatPaint} from 'react-icons/md';
-import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaEraser, FaPencilAlt} from 'react-icons/fa';
+import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaEraser, FaPencilAlt, FaFont} from 'react-icons/fa';
 import Whiteboard from '../whiteboard/Whiteboard';
 import './style.css'
 
@@ -12,7 +12,8 @@ class WhiteboardContainer extends React.Component {
             eraser_selected: false,
             color: "black",
             p_size: "5",
-            e_size: "5"
+            e_size: "5",
+            text_input_on: false
         }
     }
 
@@ -24,26 +25,29 @@ class WhiteboardContainer extends React.Component {
         this.setState({p_size: params.target.value});
     }
 
-    setPenSelected(params) {
+    setPenSelected() {
         this.setState({eraser_selected: false});
         var p = document.getElementById('p_btn');
-        if (this.state.eraser_selected === false) {
-            p.style.backgroundColor = 'teal'; 
-        }
-        
+        var e = document.getElementById('e_btn');
+        p.style.borderColor = "black";
+        e.style.border = "";
     }
 
     setEraserSelected() {
         this.setState({eraser_selected: true});
         var e = document.getElementById('e_btn');
-        if (this.state.eraser_selected === true) {
-            e.style.backgroundColor = 'teal';
-        }
+        var p = document.getElementById('p_btn');
+        e.style.borderColor = 'black';
+        p.style.border = "";
         
     }
 
     changeEraserSize(params) {
         this.setState({e_size: params.target.value});
+    }
+
+    selectTextInput() {
+        this.setState({text_input_on: true});
     }
 
 
@@ -65,8 +69,8 @@ class WhiteboardContainer extends React.Component {
                 <div class='tools-section'>
                     <span className='toolSelect-container'>
                         <span className='ctrl-z-ctrl-y-container'>
-                            <button id='ctrl_z_btn'><FaArrowAltCircleLeft></FaArrowAltCircleLeft></button>
-                            <button id='ctrl_z_btn'><FaArrowAltCircleRight></FaArrowAltCircleRight></button>
+                            <button className='ctrl_z_btn' id='ctrl_z_btn'><FaArrowAltCircleLeft></FaArrowAltCircleLeft></button>
+                            <button className='ctrl_y_btn' id='ctrl_y_btn'><FaArrowAltCircleRight></FaArrowAltCircleRight></button>
                         </span>
                         <span className='pencil_container'>
                             <button id='p_btn' className='p_btn' onClick={this.setPenSelected.bind(this)}><FaPencilAlt></FaPencilAlt></button>
@@ -93,8 +97,13 @@ class WhiteboardContainer extends React.Component {
                         <input type='color' id='p_color' defaultValue='black' value={this.state.color} onChange={this.changePenColor.bind(this)}></input>
                     </span>
                     <span className='save-to-png'>
-                    <button id="save_btn" onClick={this.saveToPng.bind(this)}>
+                        <button className='save_btn' id="save_btn" onClick={this.saveToPng.bind(this)}>
                             <MdFileDownload></MdFileDownload>
+                        </button>
+                    </span>
+                    <span className='text-inuput-selection'>
+                        <button id='select-text-input' onClick={this.selectTextInput.bind(this)}>
+                            <FaFont></FaFont>
                         </button>
                     </span>
                     <div className='people-online-list-dropdown'>
@@ -107,7 +116,7 @@ class WhiteboardContainer extends React.Component {
                 </div>
                 
                 <div id='whiteboard_container' class='whiteboard-container'>
-                    <Whiteboard color={this.state.color} p_size={this.state.p_size} e_size={this.state.e_size} e_select={this.state.eraser_selected}></Whiteboard>
+                    <Whiteboard color={this.state.color} p_size={this.state.p_size} e_size={this.state.e_size} e_select={this.state.eraser_selected} text_selected={this.state.text_input_on}></Whiteboard>
                 </div>
             </div>  
         )
