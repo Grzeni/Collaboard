@@ -37,7 +37,7 @@ class WhiteboardContainer extends React.Component {
         this.setState({eraser_selected: true});
         var e = document.getElementById('e_btn');
         var p = document.getElementById('p_btn');
-        e.style.borderColor = 'black';
+        e.style.borderColor = 'red';
         p.style.border = "";
         
     }
