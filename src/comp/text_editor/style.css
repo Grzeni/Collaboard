@@ -1,0 +1,65 @@
+.text-area-container {
+    margin-top: 72px;
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.text-area-container .closebtn {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    font-size: 24px;
+    background-color: #111;
+    color: white;
+    margin-left: 50px;
+}
+
+.text-area-container .add-md {
+    position: absolute;
+    top: 0;
+    right: 0px;
+    font-size: 24px;
+    background-color: #111;
+    color: white;
+    margin-right: 430px;
+}
+
+.text-area-container .edit-md {
+    position: absolute;
+    top: 0;
+    right: 375px;
+    font-size: 24px;
+    background-color: #111;
+    color: white;
+    visibility: hidden;
+}
+
+.text-area-container .delete-md {
+    position: absolute;
+    top: 0;
+    right: 290px;
+    font-size: 24px;
+    background-color: #111;
+    color: white;
+    visibility: hidden;
+}
+
+.text-area-container .actual-text-area {
+    background-color: lightgrey;
+    opacity: 0.5;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+    color: black;
+    resize: none;
+    position: absolute;
+    top: 35px;
+    padding-left: 1%;
+}
