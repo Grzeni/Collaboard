@@ -1,8 +1,11 @@
 import React from 'react';
 import './style.css';
 import io from 'socket.io-client';
-import queryString from 'query-string';
 import { socket } from '../../service/socket';
+import Drawing from '../../data/Drawing';
+import Markdown from '../../data/Markdown';
+import queryString from 'query-string';
+
 
 
 class Whiteboard extends React.Component {
@@ -14,78 +17,106 @@ class Whiteboard extends React.Component {
       e_size: this.props.e_size,
       p_size: this.props.p_size,
       e_select: this.props.e_select,
-      drawing_counter: 0
+      drawing_counter: 0,
+      eventList: this.props.events
     }
-    const { username, room } = queryString.parse(window.location.search);
-    console.log(username, room);
-    socket.emit('new-user-connected', { username, room }, error => {
-      if (error) {
-        alert(error);
-      }
-    });
-    socket.on('connect-drawing-emition', function (data) {
-      console.log('drawing data is being received');
-      let canvas = document.getElementById('main_canvas');
-      let context = canvas.getContext('2d');
 
-      for (const elem of data) {
-        let [col, eSi, pSi, eSel] = elem.additionalData;
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        context.strokeStyle = eSel ? "white" : col;
-        context.lineWidth = eSel ? eSi : pSi;
-        context.beginPath();
-        let first = true;
-        for (const d of elem.pixelArray) {
-          let [x, y] = d;
-          if (first) {
-            context.moveTo(x, y);
-            first = false;
-          }
-          else {
-            context.lineTo(x, y);
-          }
-          context.stroke();
-        }
-        context.closePath();
-        this.setState({ drawing_counter: this.state.drawing_counter + 1 });
-      }
-    }.bind(this));
+
+
+    //   let canvas = document.getElementById('main_canvas');
+    //   let context = canvas.getContext('2d');
+    //   for (const elem of data) {
+    //     let [col, eSi, pSi, eSel] = elem.additionalData;
+    //     context.lineCap = 'round';
+    //     context.lineJoin = 'round';
+    //     context.strokeStyle = eSel ? "white" : col;
+    //     context.lineWidth = eSel ? eSi : pSi;
+    //     context.beginPath();
+    //     let first = true;
+    //     for (const d of elem.pixelArray) {
+    //       let [x, y] = d;
+    //       if (first) {
+    //         context.moveTo(x, y);
+    //         first = false;
+    //       }
+    //       else {
+    //         context.lineTo(x, y);
+    //       }
+    //       context.stroke();
+    //     }
+    //     context.closePath();
+    //     this.setState({ drawing_counter: this.state.drawing_counter + 1 });
+    //   }
+    // }.bind(this));
   }
 
   componentDidMount() {
-    this.draw();
-
-    socket.on('canvas-drawing-emit', function (data) {
-      let canvas = document.getElementById('main_canvas');
-      let context = canvas.getContext('2d');
-      let [col, eSi, pSi, eSel] = data.additionalData;
-      context.lineCap = 'round';
-      context.lineJoin = 'round';
-      context.strokeStyle = eSel ? "white" : col;
-      context.lineWidth = eSel ? eSi : pSi;
-      context.beginPath();
-      let first = true;
-      for (const elem of data.pixelArray) {
-        let [x, y] = elem;
-        if (first) {
-          context.moveTo(x, y);
-          first = false;
+    console.log(this.state.eventList);
+    socket.on('on-connect-emition', function (globalEventList) {
+      console.log(globalEventList);
+      let eventArray = globalEventList.event_array.map(e => {
+        if (e.dataType === "text") {
+          e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
+        } else {
+          e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
         }
-        else {
-          context.lineTo(x, y);
-        }
-        context.stroke();
+        return e;
+      });
+      let canv = document.getElementById('main_canvas');
+      for (const elem of eventArray.filter(e => e.dataType === "drawing")) {
+        elem.renderElement(canv);
       }
-      context.closePath();
+      this.setState({ eventList: eventArray });
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
-    socket.on('undo-drawing-request-from-server', function(data) {
-      console.log('undo data for drawing event has been received by client', data);
-    });
-    socket.on('redo-drawing-request-from-server', function(data) {
-      console.log('redo data for drawing event has been received', data);
-    })
+
+
+    this.draw();
+    // socket.on('connect-drawing-emition', function (globalEventData) {
+    //   this.setState({eventList: globalEventData});
+    //   console.log('drawing data is being received', globalEventData);
+    //   let canv = document.getElementById('main_canvas');
+    //   for (const drawing of globalEventData.fliter(e => e.getType() === "drawing")) {
+    //     drawing.renderElement(canv);
+    //   }
+    // });
+    socket.on('canvas-drawing-emit', function (globalEventList) {
+      this.setState({ eventList: globalEventList });
+      let canv = document.getElementById('main_canvas');
+      console.log(globalEventList.event_array);
+      let lastDrawing = (globalEventList.event_array[globalEventList.event_array.length - 1]);
+      console.log(lastDrawing);
+      let lD = new Drawing(lastDrawing.color, lastDrawing.penSize, lastDrawing.eraserSize, lastDrawing.isEraserSelected, lastDrawing.pixelArray);
+      lD.renderElement(canv);
+      // let canvas = document.getElementById('main_canvas');
+      // let context = canvas.getContext('2d');
+      // let [col, eSi, pSi, eSel] = data.additionalData;
+      // context.lineCap = 'round';
+      // context.lineJoin = 'round';
+      // context.strokeStyle = eSel ? "white" : col;
+      // context.lineWidth = eSel ? eSi : pSi;
+      // context.beginPath();
+      // let first = true;
+      // for (const elem of data.pixelArray) {
+      //   let [x, y] = elem;
+      //   if (first) {
+      //     context.moveTo(x, y);
+      //     first = false;
+      //   }
+      //   else {
+      //     context.lineTo(x, y);
+      //   }
+      //   context.stroke();
+      // }
+      // context.closePath();
+      this.setState({ drawing_counter: this.state.drawing_counter + 1 });
+    }.bind(this));
+    // socket.on('undo-drawing-request-from-server', function(data) {
+    //   console.log('undo data for drawing event has been received by client', data);
+    // });
+    // socket.on('redo-drawing-request-from-server', function(data) {
+    //   console.log('redo data for drawing event has been received', data);
+    // })
     // socket.on('undo-drawing-request-from-server', function (data) {
     //   let canvas = document.getElementById('main_canvas');
     //   let context = canvas.getContext('2d');
@@ -125,8 +156,11 @@ class Whiteboard extends React.Component {
       return { e_size: newProps.e_size };
     if (newProps.p_size !== prevState.p_size)
       return { p_size: newProps.p_size };
-    else
+    if (newProps.eventList !== prevState.eventList) {
+      return { eventList: newProps.eventList };
+    } else {
       return null;
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -194,7 +228,8 @@ class Whiteboard extends React.Component {
       var usedColor = root.state.color;
       var usedSize = root.state.p_size;
       var usedESize = root.state.e_size;
-      var drawing_data = { pixelArray: last_drawn_thing, additionalData: [usedColor, usedESize, usedSize, eSel] }
+      var drawing_data = new Drawing(usedColor, usedSize, usedESize, eSel, last_drawn_thing);
+      console.log(drawing_data);
       drawing_data_array = [];
       socket.emit('canvas-drawing', drawing_data);
       console.log('emitted drawing data to the server');

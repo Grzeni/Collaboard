@@ -3,6 +3,7 @@ import './style.css'
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Draggable from 'react-draggable';
+import Markdown from "../../data/Markdown";
 
 class MarkdownContainer extends React.Component {
 
@@ -31,8 +32,7 @@ class MarkdownContainer extends React.Component {
     }
 
     onDragStopFun(event, info) {
-        console.log(this.state);
-        this.props.setLastPosition(info.node.id, info.x, info.y);
+        this.props.setLastPosition(info.x, info.y);
     }
 
 
@@ -40,7 +40,8 @@ class MarkdownContainer extends React.Component {
         return (
         <Draggable position={{x: this.state.posiX, y: this.state.posiY}}
         onStop={this.onDragStopFun.bind(this)}><div id={this.state.textId} 
-        onDoubleClick={this.props.interactFun}>
+        onDoubleClick={this.props.interactFun}
+        onMouseEnter={this.props.onMoveFun}>
             <ReactMarkdown id={this.state.textId} remarkPlugins={[remarkGfm]} 
             children={this.state.textValue}></ReactMarkdown>
             </div></Draggable>
