@@ -27,15 +27,17 @@ class WhiteboardContainer extends React.Component {
             eventList: [],
             last_deleted_md_id: null,
             drawing_data: [],
-            lastMoved: null
+            lastMoved: null,
+            popupTriggered: false
         }
-        const { username, room } = queryString.parse(window.location.search);
-        console.log(username, room);
+        const { room, username } = queryString.parse(window.location.search);
+        console.log(room, username);
         socket.emit('new-user-connected', { username, room }, error => {
             if (error) {
                 alert(error);
             }
-        });
+        }); 
+        
     }
 
     componentDidMount() {
@@ -265,6 +267,10 @@ class WhiteboardContainer extends React.Component {
         this.setState({lastMoved: lastClicked});
     }
 
+    firePopup() {
+        this.setState({popupTriggered: true});
+    }
+
 
     render() {
         return (
@@ -280,7 +286,8 @@ class WhiteboardContainer extends React.Component {
                     setPenSelected={this.setPenSelected.bind(this)}
                     saveToPng={this.saveToPng.bind(this)}
                     undoFun={this.undo.bind(this)}
-                    redoFun={this.redo.bind(this)}>
+                    redoFun={this.redo.bind(this)}
+                    firePopup={this.firePopup.bind(this)}>
                 </ToolSection>
 
                 <div id='whiteboard_container' className='whiteboard-container'>
@@ -307,7 +314,6 @@ class WhiteboardContainer extends React.Component {
                         deleteMD={this.deleteMd.bind(this)}
                         closeTextEditor={this.closeTextArea.bind(this)}>
                     </TextAreaContainer>
-
                     <Whiteboard events={this.state.eventList}
                         color={this.state.color}
                         p_size={this.state.p_size}

@@ -7,7 +7,8 @@ function App() {
   return (
     <Router>
       <Route path="/" exact component={NewWhiteboard}></Route>
-      <Route path="/whiteboard" component={WhiteboardContainer}></Route>
+      <Route path="/invite" component={NewWhiteboard}></Route>
+      <Route path="/session" component={WhiteboardContainer}></Route>
     </Router>
   );
 }

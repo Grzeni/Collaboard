@@ -3,6 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './style.css';
 import { FaClipboard } from 'react-icons/fa';
+import queryString from 'query-string';
+
 
 class NewWhiteboard extends React.Component {
     constructor(props) {
@@ -18,13 +20,13 @@ class NewWhiteboard extends React.Component {
             };
             return password;
         }
-        console.log(hash());
         var code = alpha + hash();
-        console.log(code);
+        console.log('querystring parameters', queryString.parse(window.location.search));
         this.state = {
             userName: '',
             roomHash: code,
-            copySuccess: false
+            copySuccess: false,
+            invitedToRoom: queryString.parse(window.location.search)
         }
     }
 
@@ -32,15 +34,10 @@ class NewWhiteboard extends React.Component {
         this.setState({ userName: e.target.value });
     }
 
-    setRoom(e) {
-        this.setState({ roomHash: e.target.value });
-    }
-
     copyCodeToClipboard() {
-        document.getElementById('roomCodeInput').select();
+        document.getElementById('shareLinkInput').select();
         document.execCommand("copy");
         this.setState({ copySuccess: true });
-
     }
 
 
@@ -53,21 +50,19 @@ class NewWhiteboard extends React.Component {
                     <div>
                         <input placeholder="Username" className="joinInput" type="text" onChange={this.setName.bind(this)} />
                     </div>
-                    <div>
-                        <input placeholder="Room code" className="joinInput" type="text" onChange={this.setRoom.bind(this)}></input>
-                    </div>
-                    <input id='roomCodeInput' className="joinInput" type="text" value={this.state.roomHash}/>
-                    <button className={'buttonClipboard mt-20'} onClick={this.copyCodeToClipboard.bind(this)}><FaClipboard></FaClipboard></button>
                     {
-                        this.state.copySuccess ? 
-                        <div style={{"color": 'white'}}>Copied!</div>
-                        : null
+                        (this.state.invitedToRoom.room) ?
+                            "" : <div>
+                                <input id='shareLinkInput'
+                                    className="shareLinkInput"
+                                    type="text"
+                                    value={`localhost:3000/invite?room=${this.state.roomHash}`}>
+                                </input>
+                                <button className={'buttonClipboard mt-20'} onClick={this.copyCodeToClipboard.bind(this)}><FaClipboard></FaClipboard></button>
+                            </div>
                     }
-                    <Link onClick={e => (!this.state.userName) ? e.preventDefault() : null} to={`/whiteboard?username=${this.state.userName}&room=${this.state.roomHash}`}>
-                        <button className={'button mt-20'} type="submit">Create new whiteboard</button>
-                    </Link>
-                    <Link onClick={e => (!this.state.userName || !this.state.roomHash) ? e.preventDefault() : null} to={`/whiteboard?username=${this.state.userName}&room=${this.state.roomHash}`}>
-                        <button className={'button mt-20'} type="submit">Join whiteboard</button>
+                    <Link onClick={e => (!this.state.userName) ? e.preventDefault() : null} to={`/session?room=${this.state.invitedToRoom.room ? this.state.invitedToRoom.room : this.state.roomHash}&username=${this.state.userName}`}>
+                        <button className={'button mt-20'} type="submit">{this.state.invitedToRoom.room ? `Join whiteboard` : `Create whiteboard`}</button>
                     </Link>
                 </div>
             </div>

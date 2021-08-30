@@ -58,7 +58,7 @@ class ToolSection extends React.Component {
                         </button>
                     </span>
                     <div className='people-online-list-dropdown'>
-                        <button className='dropdown-list-btn'><FaUsers></FaUsers></button>
+                        <button className='dropdown-list-btn' onClick={this.props.firePopup}><FaUsers></FaUsers></button>
                         <div className='people-list-dropdown'>
                             <a href='#'> Someone </a>
                             <a href='#'> Soemone </a>
