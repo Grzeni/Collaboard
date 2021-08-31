@@ -11,49 +11,41 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
-app.use(cors);
 app.use(router);
 
 
-let text_event_map = new Map();
-let drawing_event_array = [];
-let global_event_list = {
-    event_array: [],
-    pointer: 0
-}
+let roomAssociatedEventListArray = new Map();
+
 
 
 io.on("connect", socket => {
     console.log("User online");
     console.log(socket.id);
 
+
     socket.on('new-user-connected', ({ username, room }, callback) => {
         const { error, user } = addUser({ id: socket.id, username, room });
         if (error) return callback(error);
 
-
+        if (roomAssociatedEventListArray.get(room) === undefined) {
+            roomAssociatedEventListArray.set(room, {event_array: [], pointer: 0});
+        }
+        
         socket.join(user.room);
 
-        io.in(user.room).emit('on-connect-emition', global_event_list);
-        console.log('connected to new user, sending out event data', global_event_list);
+        io.in(user.room).emit('on-connect-emition', roomAssociatedEventListArray.get(user.room));
+        console.log('connected to new user, sending out event data', roomAssociatedEventListArray.get(user.room));
 
         callback();
-    });
-
-    socket.on('delete-md-event', function (data) {
-        const user = getUser(socket.id);
-        console.log("delete md event received, deleting position in the map");
-        text_event_map.delete(data);
-        console.log(text_event_map);
-        io.in(user.room).emit('text-addition-emit', Array.from(text_event_map));
     });
 
     socket.on('text-addition', (newMarkdown) => {
         const user = getUser(socket.id);
         console.log('new markdown data', newMarkdown);
-        global_event_list.event_array.push(newMarkdown);
-        global_event_list.pointer += 1;
-        io.in(user.room).emit('text-addition-emit', global_event_list);
+        let globalEventListForRoom = roomAssociatedEventListArray.get(user.room);
+        globalEventListForRoom.event_array.push(newMarkdown);
+        globalEventListForRoom.pointer += 1;
+        io.in(user.room).emit('text-addition-emit', globalEventListForRoom);
 
         // console.log(data);
         // console.log('text is being received by the server and will shortly be emitted to every recipient');
@@ -78,55 +70,59 @@ io.on("connect", socket => {
     socket.on('text-edited', (editedMd) => {
         const user = getUser(socket.id);
         console.log('this markdown has been edited', editedMd);
-        global_event_list.event_array.map(e => {
+        let globalEventListForRoom = roomAssociatedEventListArray.get(user.room);
+        globalEventListForRoom.event_array.map(e => {
             if (e.markdownId === editedMd.markdownId) {
                 console.log(editedMd);
                 e.isEdited = true;
-            } 
+            }
             return e;
         });
-        console.log('this is the event list with the editedMd marked', global_event_list.event_array);
-        global_event_list.event_array.push(editedMd);
-        global_event_list.pointer += 1;
-        io.in(user.room).emit('text-addition-emit', global_event_list);
+        console.log('this is the event list with the editedMd marked', globalEventListForRoom.event_array);
+        globalEventListForRoom.event_array.push(editedMd);
+        globalEventListForRoom.pointer += 1;
+        io.in(user.room).emit('text-addition-emit', globalEventListForRoom);
     });
 
 
     socket.on('text-deleted', (deletedMd) => {
         const user = getUser(socket.id);
         console.log('this markdown has been deleted', deletedMd);
-        global_event_list.event_array.map(e => {
+        let globalEventListForRoom = roomAssociatedEventListArray.get(user.room);
+        globalEventListForRoom.event_array.map(e => {
             if (e.markdownId === deletedMd.markdownId) {
                 console.log(deletedMd);
                 e.isDeleted = true;
             }
             return e;
         });
-        console.log(global_event_list.event_array);
-        io.in(user.room).emit('text-addition-emit', global_event_list);
+        console.log(globalEventListForRoom.event_array);
+        io.in(user.room).emit('text-addition-emit', globalEventListForRoom);
     });
 
     socket.on('text-moved', (lastMovedMd) => {
         const user = getUser(socket.id);
         console.log('this markdown has been moved', lastMovedMd);
-        global_event_list.event_array.map(e => {
+        let globalEventListForRoom = roomAssociatedEventListArray.get(user.room);
+        globalEventListForRoom.event_array.map(e => {
             if (e.markdownId === lastMovedMd.markdownId) {
                 console.log(lastMovedMd);
                 e.isMoved = true;
             }
             return e;
         });
-        global_event_list.event_array.push(lastMovedMd);
-        global_event_list.pointer += 1;
-        io.in(user.room).emit('text-addition-emit', global_event_list);
-    })
+        globalEventListForRoom.event_array.push(lastMovedMd);
+        globalEventListForRoom.pointer += 1;
+        io.in(user.room).emit('text-addition-emit', globalEventListForRoom);
+    });
 
     socket.on('canvas-drawing', (drawingData) => {
         const user = getUser(socket.id);
         console.log('new drawing data', drawingData);
-        global_event_list.event_array.push(drawingData);
-        global_event_list.pointer += 1;
-        socket.broadcast.to(user.room).emit('canvas-drawing-emit', global_event_list);
+        let globalEventListForRoom = roomAssociatedEventListArray.get(user.room);
+        globalEventListForRoom.event_array.push(drawingData);
+        globalEventListForRoom.pointer += 1;
+        socket.broadcast.to(user.room).emit('canvas-drawing-emit', globalEventListForRoom);
 
         // const user = getUser(socket.id);
         // drawing_event_array.push(data);
@@ -140,7 +136,7 @@ io.on("connect", socket => {
         // }
         // global_event_list.pointer = global_event_list.event_array.length;
         // socket.broadcast.to(user.room).emit('canvas-drawing-emit', data);
-        console.log('drawing data has been received by the server and has been pushed to the array');
+        console.log('drawing data has been received by the server and has been pushed to the array', globalEventListForRoom.event_array);
     });
 
     // socket.on('undo-request', (data) => {
@@ -207,9 +203,17 @@ io.on("connect", socket => {
     // });
 
     socket.on('disconnect', () => {
-        const user = removeUser(socket.id);
+        const user = getUser(socket.id);
+        const deletedUser = removeUser(socket.id);
+        let listOfUsersLeft = getUsersInRoom(user.room);
+        console.log(listOfUsersLeft);
+        if (listOfUsersLeft.length === 0) {
+            console.log('list of users is now empty, time to clear the array');
+            roomAssociatedEventListArray.get(user.room).event_array = [];
+            roomAssociatedEventListArray.pointer = 0;
+        }
     });
-    
+
 });
 
 server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));

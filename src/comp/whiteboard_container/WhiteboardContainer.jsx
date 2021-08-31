@@ -28,7 +28,6 @@ class WhiteboardContainer extends React.Component {
             last_deleted_md_id: null,
             drawing_data: [],
             lastMoved: null,
-            popupTriggered: false
         }
         const { room, username } = queryString.parse(window.location.search);
         console.log(room, username);
@@ -267,10 +266,6 @@ class WhiteboardContainer extends React.Component {
         this.setState({lastMoved: lastClicked});
     }
 
-    firePopup() {
-        this.setState({popupTriggered: true});
-    }
-
 
     render() {
         return (
@@ -286,8 +281,7 @@ class WhiteboardContainer extends React.Component {
                     setPenSelected={this.setPenSelected.bind(this)}
                     saveToPng={this.saveToPng.bind(this)}
                     undoFun={this.undo.bind(this)}
-                    redoFun={this.redo.bind(this)}
-                    firePopup={this.firePopup.bind(this)}>
+                    redoFun={this.redo.bind(this)}>
                 </ToolSection>
 
                 <div id='whiteboard_container' className='whiteboard-container'>
@@ -305,7 +299,6 @@ class WhiteboardContainer extends React.Component {
                                         psY={elem.positionY}
                                         interactFun={this.interactWithHoverText.bind(this, elem.markdownId)}
                                         onMoveFun={this.setLastDragged.bind(this, elem.markdownId)}>
-
                                     </MarkdownContainer>
                                 </div>)
                     }

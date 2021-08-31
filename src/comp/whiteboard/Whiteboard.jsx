@@ -1,10 +1,8 @@
 import React from 'react';
 import './style.css';
-import io from 'socket.io-client';
 import { socket } from '../../service/socket';
 import Drawing from '../../data/Drawing';
 import Markdown from '../../data/Markdown';
-import queryString from 'query-string';
 
 
 
