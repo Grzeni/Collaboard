@@ -1,6 +1,5 @@
 {
   "name": "react_whiteboard",
-  "proxy": "https://collaboard-server.herokuapp.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
