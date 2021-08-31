@@ -3,7 +3,6 @@ import './style.css'
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Draggable from 'react-draggable';
-import Markdown from "../../data/Markdown";
 
 class MarkdownContainer extends React.Component {
 

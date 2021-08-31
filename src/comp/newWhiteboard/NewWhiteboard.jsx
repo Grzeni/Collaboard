@@ -1,4 +1,3 @@
-import { func } from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './style.css';
@@ -56,7 +55,7 @@ class NewWhiteboard extends React.Component {
                                 <input id='shareLinkInput'
                                     className="shareLinkInput"
                                     type="text"
-                                    value={`localhost:3000/invite?room=${this.state.roomHash}`}>
+                                    readOnly value={`localhost:3000/invite?room=${this.state.roomHash}`}>
                                 </input>
                                 <button className={'buttonClipboard mt-20'} onClick={this.copyCodeToClipboard.bind(this)}><FaClipboard></FaClipboard></button>
                             </div>

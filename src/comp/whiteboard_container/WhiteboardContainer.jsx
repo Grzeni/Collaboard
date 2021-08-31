@@ -136,7 +136,7 @@ class WhiteboardContainer extends React.Component {
     }
 
     saveToPng() {
-        let downloadLink = document.createElement('a');
+        let downloadLink = document.createElement('button');
         downloadLink.setAttribute('download', 'whiteboard drawing.png');
         let can = document.getElementById('main_canvas');
         let dataURL = can.toDataURL('image/png');

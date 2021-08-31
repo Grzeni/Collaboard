@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
 import {MdFileDownload} from 'react-icons/md';
-import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaEraser, FaPencilAlt, FaFont, FaUsers} from 'react-icons/fa';
+import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaEraser, FaPencilAlt, FaFont} from 'react-icons/fa';
 
 
 class ToolSection extends React.Component {
@@ -57,13 +57,6 @@ class ToolSection extends React.Component {
                             <FaFont></FaFont>
                         </button>
                     </span>
-                    <div className='people-online-list-dropdown'>
-                        <button className='dropdown-list-btn'><FaUsers></FaUsers></button>
-                        <div className='people-list-dropdown'>
-                            <a href='#'> Someone </a>
-                            <a href='#'> Soemone </a>
-                        </div>
-                    </div>
                 </div>
         );
     }
