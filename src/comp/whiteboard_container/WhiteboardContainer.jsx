@@ -42,7 +42,7 @@ class WhiteboardContainer extends React.Component {
     componentDidMount() {
         socket.on('on-connect-emition', function (globalEventList) {
             console.log('received global event list from the server', globalEventList);
-            let eventArray = globalEventList.event_array.map(e => {
+            let eventArray = globalEventList.map(e => {
                 if (e.dataType === "text") {
                     e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
                 } else {
@@ -58,7 +58,7 @@ class WhiteboardContainer extends React.Component {
         }.bind(this));
         socket.on('text-addition-emit', function (globalEventList) {
             console.log('we are receiving the globalEventList back from the server', globalEventList);
-            let eventArray = globalEventList.event_array.map(e => {
+            let eventArray = globalEventList.map(e => {
                 if (e.dataType === "text") {
                     e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
                 } else {
@@ -74,6 +74,29 @@ class WhiteboardContainer extends React.Component {
             console.log(editFiltered);
             console.log(both);
             this.setState({ eventList: eventArray });
+        }.bind(this));
+        socket.on('undo-request-from-server', function(globalEventList) {
+            let eventArray = globalEventList.map(e => {
+                if (e.dataType === "text") {
+                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
+                } else {
+                    e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
+                }
+                return e;
+            });
+            this.setState({ eventList: eventArray }, () => console.log(this.state.eventList));
+        }.bind(this));
+
+        socket.on('redo-request-from-server', function(globalEventList) {
+            let eventArray = globalEventList.map(e => {
+                if (e.dataType === "text") {
+                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
+                } else {
+                    e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
+                }
+                return e;
+            });
+            this.setState({ eventList: eventArray }, () => console.log(this.state.eventList));
         }.bind(this));
         //this.setState({ text_add_data: this.state.text_add_data });
         // socket.on('undo-text-request-from-server', function (data) {
@@ -136,7 +159,7 @@ class WhiteboardContainer extends React.Component {
     }
 
     saveToPng() {
-        let downloadLink = document.createElement('button');
+        let downloadLink = document.createElement('a');
         downloadLink.setAttribute('download', 'whiteboard drawing.png');
         let can = document.getElementById('main_canvas');
         let dataURL = can.toDataURL('image/png');
@@ -204,6 +227,7 @@ class WhiteboardContainer extends React.Component {
     editMd() {
         //odzyskaj ostatnio wybrany tekst
         var lastMd = this.state.lastSelectedMd;
+        console.log(lastMd);
         let textArea = document.getElementById('actual_text_area');
         let currentTextAreaValue = textArea.value;
         //zmień jego wartość
@@ -260,12 +284,6 @@ class WhiteboardContainer extends React.Component {
         // });
     }
 
-    setLastDragged(t) {
-        let lastClicked = this.state.eventList.filter(e => e.dataType === "text").filter(e => e.isEdited === false).filter(e => e.isMoved === false).find(e => e.markdownId === t);
-        console.log('last clicked md', lastClicked);
-        this.setState({lastMoved: lastClicked});
-    }
-
 
     render() {
         return (
@@ -297,8 +315,7 @@ class WhiteboardContainer extends React.Component {
                                         setLastPosition={this.setPosition.bind(this)}
                                         psX={elem.positionX}
                                         psY={elem.positionY}
-                                        interactFun={this.interactWithHoverText.bind(this, elem.markdownId)}
-                                        onMoveFun={this.setLastDragged.bind(this, elem.markdownId)}>
+                                        interactFun={this.interactWithHoverText.bind(this, elem.markdownId)}>
                                     </MarkdownContainer>
                                 </div>)
                     }

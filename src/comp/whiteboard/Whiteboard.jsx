@@ -52,7 +52,7 @@ class Whiteboard extends React.Component {
     console.log(this.state.eventList);
     socket.on('on-connect-emition', function (globalEventList) {
       console.log(globalEventList);
-      let eventArray = globalEventList.event_array.map(e => {
+      let eventArray = globalEventList.map(e => {
         if (e.dataType === "text") {
           e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
         } else {
@@ -82,7 +82,7 @@ class Whiteboard extends React.Component {
       this.setState({ eventList: globalEventList });
       let canv = document.getElementById('main_canvas');
       console.log(globalEventList.event_array);
-      let lastDrawing = (globalEventList.event_array[globalEventList.event_array.length - 1]);
+      let lastDrawing = (globalEventList[globalEventList.length - 1]);
       console.log(lastDrawing);
       let lD = new Drawing(lastDrawing.color, lastDrawing.penSize, lastDrawing.eraserSize, lastDrawing.isEraserSelected, lastDrawing.pixelArray);
       lD.renderElement(canv);
@@ -108,6 +108,42 @@ class Whiteboard extends React.Component {
       // }
       // context.closePath();
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
+    }.bind(this));
+    socket.on('undo-request-from-server', function (globalEventList) {
+      this.setState({ eventList: globalEventList });
+      let eventArray = globalEventList.map(e => {
+        if (e.dataType === "text") {
+          e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
+        } else {
+          e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
+        }
+        return e;
+      });
+      let canv = document.getElementById('main_canvas');
+      let context = canv.getContext('2d');
+      context.fillStyle = 'white';
+      context.fillRect(0, 0, canv.width, canv.height);
+      for (const elem of eventArray.filter(e => e.dataType === "drawing")) {
+        elem.renderElement(canv);
+      }
+    }.bind(this));
+    socket.on('redo-request-from-server', function (globalEventList) {
+      this.setState({ eventList: globalEventList });
+      let eventArray = globalEventList.map(e => {
+        if (e.dataType === "text") {
+          e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
+        } else {
+          e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
+        }
+        return e;
+      });
+      let canv = document.getElementById('main_canvas');
+      let context = canv.getContext('2d');
+      context.fillStyle = 'white';
+      context.fillRect(0, 0, canv.width, canv.height);
+      for (const elem of eventArray.filter(e => e.dataType === "drawing")) {
+        elem.renderElement(canv);
+      }
     }.bind(this));
     // socket.on('undo-drawing-request-from-server', function(data) {
     //   console.log('undo data for drawing event has been received by client', data);

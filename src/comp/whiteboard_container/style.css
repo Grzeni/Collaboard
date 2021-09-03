@@ -9,5 +9,6 @@
 .markdown-div {
     width: 90%;
     height: 1px;
+    position: absolute;
 }
 

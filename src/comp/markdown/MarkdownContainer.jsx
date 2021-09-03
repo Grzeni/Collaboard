@@ -1,15 +1,16 @@
 import React from 'react';
-import './style.css'
+import './style.css';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Draggable from 'react-draggable';
+import { socket } from '../../service/socket';
 
 class MarkdownContainer extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.state ={
+        this.state = {
             textId: this.props.txtId,
             textValue: this.props.txtVal,
             posiX: this.props.psX,
@@ -31,7 +32,11 @@ class MarkdownContainer extends React.Component {
     }
 
     onDragStopFun(event, info) {
-        this.props.setLastPosition(info.x, info.y);
+        console.log(info.node.id);
+        //this.setState({posiX: info.x, posiY: info.y})
+        //this.props.setLastPosition(info.x, info.y);
+        let md = { id: info.node.id, xVal: info.x, yVal: info.y}; 
+        socket.emit('text-moved', md);
     }
 
 
@@ -39,8 +44,7 @@ class MarkdownContainer extends React.Component {
         return (
         <Draggable position={{x: this.state.posiX, y: this.state.posiY}}
         onStop={this.onDragStopFun.bind(this)}><div id={this.state.textId} 
-        onDoubleClick={this.props.interactFun}
-        onMouseEnter={this.props.onMoveFun}>
+        onDoubleClick={this.props.interactFun}>
             <ReactMarkdown id={this.state.textId} remarkPlugins={[remarkGfm]} 
             children={this.state.textValue}></ReactMarkdown>
             </div></Draggable>
