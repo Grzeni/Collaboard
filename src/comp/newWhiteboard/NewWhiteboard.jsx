@@ -55,7 +55,7 @@ class NewWhiteboard extends React.Component {
                                 <input id='shareLinkInput'
                                     className="shareLinkInput"
                                     type="text"
-                                    readOnly value={`localhost:3000/invite?room=${this.state.roomHash}`}>
+                                    readOnly value={`https://quizzical-borg-ced3aa.netlify.app/invite?room=${this.state.roomHash}`}>
                                 </input>
                                 <button className={'buttonClipboard mt-20'} onClick={this.copyCodeToClipboard.bind(this)}><FaClipboard></FaClipboard></button>
                             </div>
