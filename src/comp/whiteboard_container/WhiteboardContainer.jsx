@@ -253,6 +253,16 @@ class WhiteboardContainer extends React.Component {
         
     }
 
+    copyInvite() {
+        let { room, username }  = queryString.parse(window.location.search);
+        let link = `https://quizzical-borg-ced3aa.netlify.app/invite?room=${room}`;
+        let p = document.createElement('input');
+        p.style.visibility = "hidden";
+        p.value = link;
+        p.select();
+        document.execCommand("copy");
+    }
+
     undo() {
         console.log('undo function ran');
         socket.emit('undo-request');

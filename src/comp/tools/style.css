@@ -4,6 +4,23 @@
     align-content: center;
 }
 
+
+.collabContainer {
+    margin-left: 1%;
+    margin-right: 1%;
+    align-content: center;
+}
+
+.collabBtn {
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
+    margin-right: 1%;
+}
+
 .ctrl_z_btn {
     height: 27px;
     width: 50px;

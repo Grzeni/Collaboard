@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
 import { MdFileDownload } from 'react-icons/md';
-import { FaEraser, FaPencilAlt, FaMarkdown, FaUndo, FaRedo } from 'react-icons/fa';
+import { FaEraser, FaPencilAlt, FaMarkdown, FaUndo, FaRedo, FaUserFriends } from 'react-icons/fa';
 
 
 class ToolSection extends React.Component {
@@ -56,7 +56,11 @@ class ToolSection extends React.Component {
                         <FaMarkdown></FaMarkdown>
                     </button>
                 </span>
-
+                <span className="collabContainer">
+                <button id='collabBtn' className='collabBtn' onClick={this.props.copyCollabLink}>
+                        <FaUserFriends></FaUserFriends>
+                    </button>
+                </span>
                 <span className='save-to-png'>
                     <button className='save_btn' id="save_btn" onClick={this.props.saveToPng}>
                         <MdFileDownload></MdFileDownload>
