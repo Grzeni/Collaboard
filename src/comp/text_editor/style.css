@@ -63,3 +63,9 @@
     top: 35px;
     padding-left: 1%;
 }
+
+.text-area-container .fontSelect {
+    position: absolute;
+    top: 0;
+    right: 250px;
+}

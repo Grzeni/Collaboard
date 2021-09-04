@@ -249,9 +249,6 @@ io.on("connect", socket => {
             globalEventListForRoom.pointer += 1;
             io.in(user.room).emit('redo-request-from-server', globalEventListForRoom);
         }
-
-
-
     });
 
     socket.on('disconnect', () => {
@@ -265,7 +262,6 @@ io.on("connect", socket => {
             roomAssociatedEventListArray.pointer = 0;
         }
     });
-
 });
 
 server.listen(process.env.PORT || 5000, () => console.log(`Server has started.`));

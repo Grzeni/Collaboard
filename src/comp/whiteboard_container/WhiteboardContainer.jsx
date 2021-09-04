@@ -381,6 +381,20 @@ class WhiteboardContainer extends React.Component {
         // });
     }
 
+    // selectFont(params) {
+    //     let result = null;
+    //     let find = Array.prototype.find;
+    //     find.call(document.styleSheets, styleSheet => {
+    //         result = find.call(styleSheet.cssSelector, cssRule => {
+    //             return cssRule instanceof CSSStyleRule 
+    //                 && cssRule.selectorText.toLowerCase() === 'react-draggable';
+    //         });
+    //         return result != null;
+    //     });
+    //     console.log(result);
+    //     result.style = `font-size: "${params.target.value}px"`;
+    // }
+
 
     render() {
         return (
