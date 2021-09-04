@@ -8,6 +8,7 @@ import { socket } from '../../service/socket';
 import Markdown from '../../data/Markdown';
 import Drawing from '../../data/Drawing';
 import queryString from 'query-string';
+import * as htmlToImage from 'html-to-image';
 
 
 
@@ -35,22 +36,23 @@ class WhiteboardContainer extends React.Component {
             if (error) {
                 alert(error);
             }
-        }); 
-        
+        });
+
     }
 
     componentDidMount() {
         socket.on('on-connect-emition', function (globalEventList) {
             console.log('received global event list from the server', globalEventList);
-            let eventArray = globalEventList.map(e => {
+            let eventArray = globalEventList.event_array.map(e => {
                 if (e.dataType === "text") {
-                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
+                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isDeleted);
                 } else {
                     e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
                 }
                 return e;
             });
-            this.setState({ eventList: eventArray }, () => console.log(this.state.eventList));
+            let sliced = eventArray.slice(0, globalEventList.pointer);
+            this.setState({ eventList: sliced }, () => console.log(this.state.eventList));
             // let f = data.map(elem => elem.flat());
             // this.setState({ text_received: f });
             // console.log('this  is text_add_data', this.state.text_add_data);
@@ -58,25 +60,73 @@ class WhiteboardContainer extends React.Component {
         }.bind(this));
         socket.on('text-addition-emit', function (globalEventList) {
             console.log('we are receiving the globalEventList back from the server', globalEventList);
-            let eventArray = globalEventList.map(e => {
+            let eventArray = globalEventList.event_array.map(e => {
                 if (e.dataType === "text") {
-                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
+                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isDeleted);
                 } else {
                     e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
                 }
                 return e;
             });
-            let textFiltered = eventArray.filter(e => e.dataType === "text");
-            let editFiltered = textFiltered.filter(e => e.isEdited === false);
-            let both = eventArray.filter(e => e.dataType === "text").filter(e => e.isEdited === false);
-            console.log(eventArray);
-            console.log(textFiltered);
-            console.log(editFiltered);
-            console.log(both);
-            this.setState({ eventList: eventArray });
+
+            let filterByText = eventArray.filter(e => e.dataType === "text");
+            let hashSet = new Map();
+            console.log('hashset before procedure', hashSet);
+            for (let i = filterByText.length - 1; i >= 0; i--) {
+                let id = filterByText[i].markdownId;
+                if (hashSet.get(id) === undefined) {
+                    console.log(filterByText[i].isDeleted);
+                    if (filterByText[i].isDeleted === true) {
+                        console.log('this shit actually ran');
+                        hashSet.set(id, null);
+                    } else {
+                        hashSet.set(id, filterByText[i]);
+                    }
+                }
+            }
+            console.log('hashset after procedure', hashSet);
+            let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
+            console.log('eventList after flattening and null verification', eventListToRender);
+            this.setState({ eventList: eventListToRender });
+            // if (this.state.eventList.length === 0) {
+            //     console.log('event list is currently empty, therefore we will just assign the received list as the state');
+            //     this.setState({eventList: eventArray});
+            // } else {
+            //     console.log('eventList is not empty so we enter the else statement')
+            //     let eventListCopy = this.state.eventList;
+            //     eventArray = eventArray.filter(e => e.dataType === "text");
+
+            //     for (var i = 0; i < globalEventList.pointer; i++) {
+            //         for (var j = 0; j < eventListCopy.length; j++) {
+            //             if (eventArray[i].markdownId === eventListCopy[j].markdownId) {
+            //                 eventListCopy[j] = eventArray[i];
+            //             } else {
+            //                 if (eventListCopy.includes(eventArray[i]) === false) {
+            //                     eventListCopy.push(eventArray[i]);
+            //                 }
+            //             }
+            //         }
+            //         // let currentElement = eventArray[i];
+            //         // console.log(currentElement);
+            //         // let currElemId = currentElement.markdownId;
+            //         // console.log('last element added id', lastElementAdded.markdownId);
+            //         // if (currElemId === lastElementAdded.markdownId) {
+            //         //     eventArray[i] = null;
+            //         // }
+            //     }
+            //     let deleteDuplicates = Array.from(new Set(eventListCopy));
+            //     console.log('eventList copy', deleteDuplicates);
+            //     this.setState({eventList: deleteDuplicates});
+            // }
+            //let filteredForNulls = eventArray.filter(e => e !== null);
+            //console.log('with nulls', eventArray);
+            //console.log('filtered', filteredForNulls);
+            // console.log('eventList copy', eventListCopy);
+            // this.setState({ eventList: eventListCopy });
         }.bind(this));
-        socket.on('undo-request-from-server', function(globalEventList) {
-            let eventArray = globalEventList.map(e => {
+        socket.on('undo-request-from-server', function (globalEventList) {
+            let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
+            let eventArray = sliced.map(e => {
                 if (e.dataType === "text") {
                     e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
                 } else {
@@ -84,19 +134,52 @@ class WhiteboardContainer extends React.Component {
                 }
                 return e;
             });
-            this.setState({ eventList: eventArray }, () => console.log(this.state.eventList));
+            let filterByText = eventArray.filter(e => e.dataType === "text");
+            let hashSet = new Map();
+            console.log('hashset before procedure', hashSet);
+            for (let i = filterByText.length - 1; i >= 0; i--) {
+                let id = filterByText[i].markdownId;
+                if (hashSet.get(id) === undefined) {
+                    console.log(filterByText[i].isDeleted);
+                    if (filterByText[i].isDeleted === true) {
+                        console.log('this shit actually ran');
+                        hashSet.set(id, null);
+                    } else {
+                        hashSet.set(id, filterByText[i]);
+                    }
+                }
+            }
+            let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
+            this.setState({ eventList:  eventListToRender }, () => console.log(this.state.eventList));
         }.bind(this));
 
-        socket.on('redo-request-from-server', function(globalEventList) {
-            let eventArray = globalEventList.map(e => {
+        socket.on('redo-request-from-server', function (globalEventList) {
+            let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
+            let eventArray = sliced.map(e => {
                 if (e.dataType === "text") {
-                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isEdited, e.isDeleted, e.isMoved);
+                    e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isDeleted);
                 } else {
                     e = new Drawing(e.color, e.penSize, e.eraserSize, e.isEraserSelected, e.pixelArray);
                 }
                 return e;
             });
-            this.setState({ eventList: eventArray }, () => console.log(this.state.eventList));
+            let filterByText = eventArray.filter(e => e.dataType === "text");
+            let hashSet = new Map();
+            console.log('hashset before procedure', hashSet);
+            for (let i = filterByText.length - 1; i >= 0; i--) {
+                let id = filterByText[i].markdownId;
+                if (hashSet.get(id) === undefined) {
+                    console.log(filterByText[i].isDeleted);
+                    if (filterByText[i].isDeleted === true) {
+                        console.log('this shit actually ran');
+                        hashSet.set(id, null);
+                    } else {
+                        hashSet.set(id, filterByText[i]);
+                    }
+                }
+            }
+            let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
+            this.setState({ eventList: eventListToRender }, () => console.log(this.state.eventList));
         }.bind(this));
         //this.setState({ text_add_data: this.state.text_add_data });
         // socket.on('undo-text-request-from-server', function (data) {
@@ -159,13 +242,15 @@ class WhiteboardContainer extends React.Component {
     }
 
     saveToPng() {
-        let downloadLink = document.createElement('a');
-        downloadLink.setAttribute('download', 'whiteboard drawing.png');
-        let can = document.getElementById('main_canvas');
-        let dataURL = can.toDataURL('image/png');
-        let url = dataURL.replace(/^data:image\/png/, 'data:application/octet-stream');
-        downloadLink.setAttribute('href', url);
-        downloadLink.click();
+        htmlToImage.toPng(document.getElementById('whiteboard_container'))
+        .then( function(dataUrl) {
+            let downloadLink = document.createElement('a');
+            downloadLink.setAttribute('download', 'whiteboard drawing.png');
+            let url = dataUrl.replace(/^data:image\/png/, 'data:application/octet-stream');
+            downloadLink.setAttribute('href', url);
+            downloadLink.click();
+        });
+        
     }
 
     undo() {
@@ -251,6 +336,7 @@ class WhiteboardContainer extends React.Component {
 
     deleteMd() {
         let lastMd = this.state.lastSelectedMd;
+        lastMd.isDeleted = true;
         socket.emit('text-deleted', lastMd);
         // console.log("delete md ran");
         // let last_md = this.state.lastSelectedMd;
@@ -287,7 +373,7 @@ class WhiteboardContainer extends React.Component {
 
     render() {
         return (
-            <div className='container'>
+            <div id='wb_container' className='container'>
                 <ToolSection color={this.state.color}
                     e_size={this.state.e_size}
                     p_size={this.state.p_size}
@@ -305,10 +391,6 @@ class WhiteboardContainer extends React.Component {
                 <div id='whiteboard_container' className='whiteboard-container'>
                     {
                         this.state.eventList
-                            .filter(e => e.dataType === "text")
-                            .filter(e => e.isEdited !== true)
-                            .filter(e => e.isDeleted !== true)
-                            .filter(e => e.isMoved !== true)
                             .map(elem =>
                                 <div className='markdown-div' key={elem.markdownId}>
                                     <MarkdownContainer txtId={elem.markdownId} txtVal={elem.markdownText}

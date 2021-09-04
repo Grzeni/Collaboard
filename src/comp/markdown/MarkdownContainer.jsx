@@ -14,7 +14,7 @@ class MarkdownContainer extends React.Component {
             textId: this.props.txtId,
             textValue: this.props.txtVal,
             posiX: this.props.psX,
-            posiY: this.props.psY
+            posiY: this.props.psY,
         }
     }
     // componentWillReceiveProps(newProps) {

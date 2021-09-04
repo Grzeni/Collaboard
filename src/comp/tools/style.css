@@ -1,13 +1,55 @@
-.color-picker-container {
-    text-align: left;
-    display: inline;
-    color: white;
+.ctrl-z-ctrl-y-container {
+    margin-left: 1%;
+    margin-right: 1%;
+    align-content: center;
 }
 
-.pensize-container {
-    display: inline;
-    color: black;
-    margin-left: 12px;
+.ctrl_z_btn {
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
+    margin-right: 1%;
+}
+
+.ctrl_y_btn {
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
+}
+
+.color-picker-container {
+    align-content: center;
+}
+
+.colorPicker {
+    margin-left: 1%;
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    margin-top: 0em;
+    margin-right: 0em;
+    margin-bottom: 0em;
+    text-align: center;
+    display: inline-block;
+}
+
+.pencil-container {
+    margin-left: 1%;
+    margin-right: 1%;
+    align-content: center;
 }
 
 .tools-section {
@@ -26,66 +68,77 @@
 }
 
 .save-to-png {
-    margin-left: 1%;
+    margin-left: 3%;
     margin-right: 1%;
     align-content: right;
 }
 
+.p_btn {
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
+}
 
-.p-radio {
-    margin-left: 1%;
-    margin-right: 1%;
-
+.pSizeSelect {
+    margin-left: 0.5%;
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
 }
 
 .eraser-container {
     margin-left: 1%;
     margin-right: 1%;
+    align-content: center;
 }
 
-.people-online-list-dropdown {
-    position: relative;
-    display: inline-block;
-    margin-left: 65%;
+.e_btn {
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
 }
 
-.dropdown-list-btn {
-    background-color: #04AA6D;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
+.eSizeSelect {
+    margin-left: 0.5%;
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
 }
 
-.people-list-dropdown {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+.markdownEditorBtn {
+    height: 27px;
+    width: 50px;
+    padding-top: 3px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
 }
 
-.people-list-dropdown a:hover {
-    background-color: #ddd;
+.save_btn {
+    height: 27px;
+    width: 50px;
+    padding-top: 1px;
+    padding-right: 2px;
+    padding-bottom: 1px;
+    padding-left: 2px;
 }
-
-.people-list-dropdown a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.people-online-list-dropdown:hover .people-list-dropdown {
-    display: block;
-}
-
-.people-online-list-dropdown:hover .dropdown-list-btn {background-color: #3e8e41;}
 
 .text-input-selection {
     margin-left: 1%;
     margin-right: 1%;
+    align-content: center;
 }
 
 .p_btn .tooltiptext {

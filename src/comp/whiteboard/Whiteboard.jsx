@@ -51,8 +51,8 @@ class Whiteboard extends React.Component {
   componentDidMount() {
     console.log(this.state.eventList);
     socket.on('on-connect-emition', function (globalEventList) {
-      console.log(globalEventList);
-      let eventArray = globalEventList.map(e => {
+      console.log(globalEventList.event_array);
+      let eventArray = globalEventList.event_array.map(e => {
         if (e.dataType === "text") {
           e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
         } else {
@@ -60,11 +60,12 @@ class Whiteboard extends React.Component {
         }
         return e;
       });
+      let sliced = eventArray.slice(0, globalEventList.pointer);
       let canv = document.getElementById('main_canvas');
-      for (const elem of eventArray.filter(e => e.dataType === "drawing")) {
+      for (const elem of sliced.filter(e => e.dataType === "drawing")) {
         elem.renderElement(canv);
       }
-      this.setState({ eventList: eventArray });
+      this.setState({ eventList: sliced });
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
 
@@ -79,10 +80,10 @@ class Whiteboard extends React.Component {
     //   }
     // });
     socket.on('canvas-drawing-emit', function (globalEventList) {
-      this.setState({ eventList: globalEventList });
+      this.setState({ eventList: globalEventList.event_array });
       let canv = document.getElementById('main_canvas');
       console.log(globalEventList.event_array);
-      let lastDrawing = (globalEventList[globalEventList.length - 1]);
+      let lastDrawing = (globalEventList[globalEventList.event_array.length - 1]);
       console.log(lastDrawing);
       let lD = new Drawing(lastDrawing.color, lastDrawing.penSize, lastDrawing.eraserSize, lastDrawing.isEraserSelected, lastDrawing.pixelArray);
       lD.renderElement(canv);
@@ -110,8 +111,8 @@ class Whiteboard extends React.Component {
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
     socket.on('undo-request-from-server', function (globalEventList) {
-      this.setState({ eventList: globalEventList });
-      let eventArray = globalEventList.map(e => {
+      let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
+      let eventArray = sliced.map(e => {
         if (e.dataType === "text") {
           e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
         } else {
@@ -119,6 +120,7 @@ class Whiteboard extends React.Component {
         }
         return e;
       });
+      this.setState({ eventList: eventArray });
       let canv = document.getElementById('main_canvas');
       let context = canv.getContext('2d');
       context.fillStyle = 'white';
@@ -128,8 +130,8 @@ class Whiteboard extends React.Component {
       }
     }.bind(this));
     socket.on('redo-request-from-server', function (globalEventList) {
-      this.setState({ eventList: globalEventList });
-      let eventArray = globalEventList.map(e => {
+      let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
+      let eventArray = sliced.map(e => {
         if (e.dataType === "text") {
           e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY);
         } else {
@@ -137,6 +139,7 @@ class Whiteboard extends React.Component {
         }
         return e;
       });
+      this.setState({ eventList: eventArray });
       let canv = document.getElementById('main_canvas');
       let context = canv.getContext('2d');
       context.fillStyle = 'white';

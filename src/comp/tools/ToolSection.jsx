@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
-import {MdFileDownload} from 'react-icons/md';
-import {FaArrowAltCircleLeft, FaArrowAltCircleRight, FaEraser, FaPencilAlt, FaFont} from 'react-icons/fa';
+import { MdFileDownload } from 'react-icons/md';
+import { FaEraser, FaPencilAlt, FaMarkdown, FaUndo, FaRedo } from 'react-icons/fa';
 
 
 class ToolSection extends React.Component {
@@ -17,47 +17,52 @@ class ToolSection extends React.Component {
 
 
     render() {
-        return ( 
+        return (
             <div className='tools-section'>
-                    <span className='toolSelect-container'>
-                        <span className='ctrl-z-ctrl-y-container'>
-                            <button className='ctrl_z_btn' id='ctrl_z_btn' onClick={this.props.undoFun}><FaArrowAltCircleLeft></FaArrowAltCircleLeft></button>
-                            <button className='ctrl_y_btn' id='ctrl_y_btn' onClick={this.props.redoFun}><FaArrowAltCircleRight></FaArrowAltCircleRight></button>
-                        </span>
-                        <span className='pencil_container'>
-                            <button id='p_btn' className='p_btn' onClick={this.props.setPenSelected}><FaPencilAlt></FaPencilAlt></button>
-                            <select id='p_size_select' onChange={this.props.changePenSize}>
-                                <option>5</option>
-                                <option>10</option>
-                                <option>15</option>
-                                <option>20</option>
-                            </select>
-                        </span>
-                        
-                        <span className='eraser-container'>
-                            <button id="e_btn" className='e_btn' onClick={this.props.setEraserSelected}><FaEraser></FaEraser></button>
-                            <select id='e_size_select' onChange={this.props.changeEraserSize}>
-                                <option>5</option>
-                                <option>10</option>
-                                <option>15</option>
-                                <option>20</option>
-                            </select> 
-                        </span>
+                <span className='toolSelect-container'>
+                    <span className='ctrl-z-ctrl-y-container'>
+                        <button className='ctrl_z_btn' id='ctrl_z_btn' onClick={this.props.undoFun}><FaUndo></FaUndo></button>
+                        <button className='ctrl_y_btn' id='ctrl_y_btn' onClick={this.props.redoFun}><FaRedo></FaRedo></button>
                     </span>
-                    <span className='color-picker-conrainer'>
-                        <input type='color' id='p_color' onChange={this.props.changePenColor}></input>
+                    <span className='pencil_container'>
+                        <button id='p_btn' className='p_btn' onClick={this.props.setPenSelected}><FaPencilAlt></FaPencilAlt></button>
+                        <select id='p_size_select' className='pSizeSelect' onChange={this.props.changePenSize}>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>15</option>
+                            <option>20</option>
+                        </select>
                     </span>
-                    <span className='save-to-png'>
-                        <button className='save_btn' id="save_btn" onClick={this.props.saveToPng}>
-                            <MdFileDownload></MdFileDownload>
-                        </button>
+                    <span className='color-picker-container'>
+                        <input className="colorPicker" type='color' id='p_color' onChange={this.props.changePenColor}></input>
                     </span>
-                    <span className='text-inuput-selection'>
-                        <button id='select-text-input' onClick={this.props.textInputSelected}>
-                            <FaFont></FaFont>
-                        </button>
+                    <span className='eraser-container'>
+                        <button id="e_btn" className='e_btn' onClick={this.props.setEraserSelected}><FaEraser></FaEraser></button>
+                        <select id='e_size_select' className='eSizeSelect' onChange={this.props.changeEraserSize}>
+                            <option>5</option>
+                            <option>10</option>
+                            <option>15</option>
+                            <option>20</option>
+                            <option>30</option>
+                            <option>50</option>
+                            <option>75</option>
+                            <option>100</option>
+                        </select>
                     </span>
-                </div>
+                </span>
+                
+                <span className='text-inuput-selection'>
+                    <button id='select-text-input' className='markdownEditorBtn' onClick={this.props.textInputSelected}>
+                        <FaMarkdown></FaMarkdown>
+                    </button>
+                </span>
+
+                <span className='save-to-png'>
+                    <button className='save_btn' id="save_btn" onClick={this.props.saveToPng}>
+                        <MdFileDownload></MdFileDownload>
+                    </button>
+                </span>
+            </div>
         );
     }
 }
