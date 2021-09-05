@@ -83,7 +83,7 @@ class Whiteboard extends React.Component {
       this.setState({ eventList: globalEventList.event_array });
       let canv = document.getElementById('main_canvas');
       console.log(globalEventList.event_array);
-      let filtered = globalEventList.filter(e => e.dataType === "drawing");
+      let filtered = globalEventList.event_array.filter(e => e.dataType === "drawing");
       let lastDrawing = (filtered[filtered.length - 1]);
       console.log(lastDrawing.length);
       console.log(lastDrawing);
