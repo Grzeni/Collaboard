@@ -294,7 +294,6 @@ class WhiteboardContainer extends React.Component {
                             .map(elem =>
                                 <div className='markdown-div' key={elem.markdownId}>
                                     <MarkdownContainer txtId={elem.markdownId} txtVal={elem.markdownText}
-                                        setLastPosition={this.setPosition.bind(this)}
                                         psX={elem.positionX}
                                         psY={elem.positionY}
                                         interactFun={this.interactWithHoverText.bind(this, elem.markdownId)}>
