@@ -270,14 +270,6 @@ class WhiteboardContainer extends React.Component {
         socket.emit('text-deleted', lastMd);
     }
 
-    setPosition(x, y) {
-        let lastMovedMd = this.state.lastMoved;
-        console.log(lastMovedMd);
-        lastMovedMd.positionX = x;
-        lastMovedMd.positionY = y;
-        socket.emit('text-moved', lastMovedMd);
-    }
-
 
     render() {
         return (
