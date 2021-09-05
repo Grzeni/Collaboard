@@ -1,7 +1,7 @@
 import React from 'react';
 import './style.css';
 import { MdFileDownload } from 'react-icons/md';
-import { FaEraser, FaPencilAlt, FaMarkdown, FaUndo, FaRedo, FaUserFriends } from 'react-icons/fa';
+import { FaEraser, FaPencilAlt, FaUndo, FaRedo, FaUserFriends, FaFont } from 'react-icons/fa';
 
 
 class ToolSection extends React.Component {
@@ -53,7 +53,7 @@ class ToolSection extends React.Component {
                 
                 <span className='text-inuput-selection'>
                     <button id='select-text-input' className='markdownEditorBtn' onClick={this.props.textInputSelected}>
-                        <FaMarkdown></FaMarkdown>
+                        <FaFont></FaFont>
                     </button>
                 </span>
                 <span className="collabContainer">

@@ -10,9 +10,6 @@ import Drawing from '../../data/Drawing';
 import queryString from 'query-string';
 import * as htmlToImage from 'html-to-image';
 
-
-
-
 class WhiteboardContainer extends React.Component {
     constructor(props) {
         super(props);
@@ -53,11 +50,8 @@ class WhiteboardContainer extends React.Component {
             });
             let sliced = eventArray.slice(0, globalEventList.pointer);
             this.setState({ eventList: sliced }, () => console.log(this.state.eventList));
-            // let f = data.map(elem => elem.flat());
-            // this.setState({ text_received: f });
-            // console.log('this  is text_add_data', this.state.text_add_data);
-            // console.log('this is text_received', this.state.text_received);
         }.bind(this));
+
         socket.on('text-addition-emit', function (globalEventList) {
             console.log('we are receiving the globalEventList back from the server', globalEventList);
             let eventArray = globalEventList.event_array.map(e => {
@@ -88,42 +82,8 @@ class WhiteboardContainer extends React.Component {
             let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
             console.log('eventList after flattening and null verification', eventListToRender);
             this.setState({ eventList: eventListToRender });
-            // if (this.state.eventList.length === 0) {
-            //     console.log('event list is currently empty, therefore we will just assign the received list as the state');
-            //     this.setState({eventList: eventArray});
-            // } else {
-            //     console.log('eventList is not empty so we enter the else statement')
-            //     let eventListCopy = this.state.eventList;
-            //     eventArray = eventArray.filter(e => e.dataType === "text");
-
-            //     for (var i = 0; i < globalEventList.pointer; i++) {
-            //         for (var j = 0; j < eventListCopy.length; j++) {
-            //             if (eventArray[i].markdownId === eventListCopy[j].markdownId) {
-            //                 eventListCopy[j] = eventArray[i];
-            //             } else {
-            //                 if (eventListCopy.includes(eventArray[i]) === false) {
-            //                     eventListCopy.push(eventArray[i]);
-            //                 }
-            //             }
-            //         }
-            //         // let currentElement = eventArray[i];
-            //         // console.log(currentElement);
-            //         // let currElemId = currentElement.markdownId;
-            //         // console.log('last element added id', lastElementAdded.markdownId);
-            //         // if (currElemId === lastElementAdded.markdownId) {
-            //         //     eventArray[i] = null;
-            //         // }
-            //     }
-            //     let deleteDuplicates = Array.from(new Set(eventListCopy));
-            //     console.log('eventList copy', deleteDuplicates);
-            //     this.setState({eventList: deleteDuplicates});
-            // }
-            //let filteredForNulls = eventArray.filter(e => e !== null);
-            //console.log('with nulls', eventArray);
-            //console.log('filtered', filteredForNulls);
-            // console.log('eventList copy', eventListCopy);
-            // this.setState({ eventList: eventListCopy });
         }.bind(this));
+
         socket.on('undo-request-from-server', function (globalEventList) {
             let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
             let eventArray = sliced.map(e => {
@@ -181,33 +141,6 @@ class WhiteboardContainer extends React.Component {
             let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
             this.setState({ eventList: eventListToRender }, () => console.log(this.state.eventList));
         }.bind(this));
-        //this.setState({ text_add_data: this.state.text_add_data });
-        // socket.on('undo-text-request-from-server', function (data) {
-        //     console.log('data needed to undo text has been received by client', data);
-        // });
-        // socket.on('redo-text-request-from-server', function (data) {
-        //     console.log('data needed to redo text evetn has been received by client', data);
-        // });
-        // socket.on('undo-text-request-from-server', function(data) {
-        //     this.setState({text_received: data});
-        //     //albo text_add_data zmienić, nie jestem pewny
-        // }.bind(this));  
-
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        // if (prevState.text_add_data !== this.state.text_add_data) {
-        //     socket.emit('text-addition', this.state.text_add_data);
-        //     console.log('text_add_data has been updated and now we are sending it to the server', this.state.text_add_data);
-
-        // }
-        // if (prevState.last_deleted_md_id !== this.state.last_deleted_md_id) {
-        //     socket.emit('delete-md-event', this.state.last_deleted_md_id);
-        //     this.setState({ last_deleted_md_id: this.last_deleted_md_id });
-        // }
-        // if (prevState.text_received !== this.state.text_received) {
-        //     this.setState({ text_received: this.state.text_received });
-        // }
     }
 
     //methods to handle tools
@@ -277,10 +210,6 @@ class WhiteboardContainer extends React.Component {
     //methods to handle text editor
 
     textInputSelected() {
-        //1. otworzyć okno do wpisywania tekstu
-        //2. po wpisaniu tekstu i kliknięciu przyciku add utowrzyć diva w lewym górnym rogu ekranu, który wyrenderuje do md tekst wpiswany w polu
-        //3. div musi być przesuwalny ale skalować ma się tylko względem tego ile jest w nim tekstu i jakiej jest on wielkości
-        //4. po dwukrotnym kliknięciu na div'a jego zawartość powinna wyświetlić się w 
         this.setState({ text_input_selected: true });
         document.getElementById('edit_md').style = "visibility: hidden";
         document.getElementById('delete_md').style = "visibility: hidden";
@@ -302,7 +231,6 @@ class WhiteboardContainer extends React.Component {
     addMarkdownDiv() {
         var t_a = document.getElementById('actual_text_area');
         socket.emit('text-addition', new Markdown(Date.now(), t_a.value, 641, 210));
-        //this.setState({ text_add_data: [...this.state.text_add_data, [Date.now(), t_a.value, { pX: 641, pY: 210 }]] }, () => console.log(this.state.text_add_data));
     }
 
     interactWithHoverText(t) {
@@ -330,16 +258,7 @@ class WhiteboardContainer extends React.Component {
         lastMd.markdownText = currentTextAreaValue;
         //wyemituj go na server
         socket.emit('text-edited', lastMd);
-
-        // let text_data_copy = this.state.text_received;
-        // let prev_value_entry = text_data_copy.find(elem => elem[0].toString() === t_id);
-        // let new_entry = [prev_value_entry[0], curr_val, prev_value_entry[2]]
-        // let new_list = text_data_copy.map((elem) => {
-        //     if (elem === prev_value_entry) {
-        //         elem = new_entry;
-        //     }
-        //     return elem;
-        // });
+        //schowaj pole tekstowe
         let t_a_container = document.getElementById('text_area_container');
         t_a_container.style.width = "0px";
         document.getElementById('main_canvas').style.marginLeft = "0px";
@@ -349,15 +268,6 @@ class WhiteboardContainer extends React.Component {
         let lastMd = this.state.lastSelectedMd;
         lastMd.isDeleted = true;
         socket.emit('text-deleted', lastMd);
-        // console.log("delete md ran");
-        // let last_md = this.state.lastSelectedMd;
-        // console.log("this is the id of the last selected md", last_md);
-        // let text_data_copy = this.state.text_received;
-        // console.log("this is the text_eceived copy", text_data_copy);
-        // let new_list = text_data_copy.filter(elem => elem[0].toString() !== last_md);
-        // console.log("this is the new list without the deleted element", new_list);
-        // this.setState({ text_add_data: new_list });
-        // this.setState({ last_deleted_md_id: last_md });
     }
 
     setPosition(x, y) {
@@ -366,19 +276,6 @@ class WhiteboardContainer extends React.Component {
         lastMovedMd.positionX = x;
         lastMovedMd.positionY = y;
         socket.emit('text-moved', lastMovedMd);
-
-        // console.log('set position ran');
-        // let l = this.state.text_received;
-        // let f = l.find(elem => elem[0].toString() === i);
-        // let newList = l.map((elem) => {
-        //     if (elem === f) {
-        //         elem[2] = { pX: x, pY: y };
-        //     }
-        //     return elem;
-        // });
-        // this.setState({ text_add_data: newList }, function () {
-        //     console.log(this.state.text_add_data);
-        // });
     }
 
 

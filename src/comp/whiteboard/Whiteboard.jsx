@@ -18,34 +18,6 @@ class Whiteboard extends React.Component {
       drawing_counter: 0,
       eventList: this.props.events
     }
-
-
-
-    //   let canvas = document.getElementById('main_canvas');
-    //   let context = canvas.getContext('2d');
-    //   for (const elem of data) {
-    //     let [col, eSi, pSi, eSel] = elem.additionalData;
-    //     context.lineCap = 'round';
-    //     context.lineJoin = 'round';
-    //     context.strokeStyle = eSel ? "white" : col;
-    //     context.lineWidth = eSel ? eSi : pSi;
-    //     context.beginPath();
-    //     let first = true;
-    //     for (const d of elem.pixelArray) {
-    //       let [x, y] = d;
-    //       if (first) {
-    //         context.moveTo(x, y);
-    //         first = false;
-    //       }
-    //       else {
-    //         context.lineTo(x, y);
-    //       }
-    //       context.stroke();
-    //     }
-    //     context.closePath();
-    //     this.setState({ drawing_counter: this.state.drawing_counter + 1 });
-    //   }
-    // }.bind(this));
   }
 
   componentDidMount() {
@@ -69,16 +41,8 @@ class Whiteboard extends React.Component {
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
 
-
     this.draw();
-    // socket.on('connect-drawing-emition', function (globalEventData) {
-    //   this.setState({eventList: globalEventData});
-    //   console.log('drawing data is being received', globalEventData);
-    //   let canv = document.getElementById('main_canvas');
-    //   for (const drawing of globalEventData.fliter(e => e.getType() === "drawing")) {
-    //     drawing.renderElement(canv);
-    //   }
-    // });
+    
     socket.on('canvas-drawing-emit', function (globalEventList) {
       this.setState({ eventList: globalEventList.event_array });
       let canv = document.getElementById('main_canvas');
@@ -89,29 +53,9 @@ class Whiteboard extends React.Component {
       console.log(lastDrawing);
       let lD = new Drawing(lastDrawing.color, lastDrawing.penSize, lastDrawing.eraserSize, lastDrawing.isEraserSelected, lastDrawing.pixelArray);
       lD.renderElement(canv);
-      // let canvas = document.getElementById('main_canvas');
-      // let context = canvas.getContext('2d');
-      // let [col, eSi, pSi, eSel] = data.additionalData;
-      // context.lineCap = 'round';
-      // context.lineJoin = 'round';
-      // context.strokeStyle = eSel ? "white" : col;
-      // context.lineWidth = eSel ? eSi : pSi;
-      // context.beginPath();
-      // let first = true;
-      // for (const elem of data.pixelArray) {
-      //   let [x, y] = elem;
-      //   if (first) {
-      //     context.moveTo(x, y);
-      //     first = false;
-      //   }
-      //   else {
-      //     context.lineTo(x, y);
-      //   }
-      //   context.stroke();
-      // }
-      // context.closePath();
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
+
     socket.on('undo-request-from-server', function (globalEventList) {
       let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
       let eventArray = sliced.map(e => {
@@ -131,6 +75,7 @@ class Whiteboard extends React.Component {
         elem.renderElement(canv);
       }
     }.bind(this));
+
     socket.on('redo-request-from-server', function (globalEventList) {
       let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
       let eventArray = sliced.map(e => {
@@ -150,40 +95,6 @@ class Whiteboard extends React.Component {
         elem.renderElement(canv);
       }
     }.bind(this));
-    // socket.on('undo-drawing-request-from-server', function(data) {
-    //   console.log('undo data for drawing event has been received by client', data);
-    // });
-    // socket.on('redo-drawing-request-from-server', function(data) {
-    //   console.log('redo data for drawing event has been received', data);
-    // })
-    // socket.on('undo-drawing-request-from-server', function (data) {
-    //   let canvas = document.getElementById('main_canvas');
-    //   let context = canvas.getContext('2d');
-    //   canvas_context.fillStyle = 'white';
-    //   canvas_context.fillRect(0, 0, canvas.width, canvas.height);
-    //   for (const elem of data) {
-    //     let [col, eSi, pSi, eSel] = elem.additionalData;
-    //     context.lineCap = 'round';
-    //     context.lineJoin = 'round';
-    //     context.strokeStyle = eSel ? "white" : col;
-    //     context.lineWidth = eSel ? eSi : pSi;
-    //     context.beginPath();
-    //     let first = true;
-    //     for (const d of elem.pixelArray) {
-    //       let [x, y] = d;
-    //       if (first) {
-    //         context.moveTo(x, y);
-    //         first = false;
-    //       }
-    //       else {
-    //         context.lineTo(x, y);
-    //       }
-    //       context.stroke();
-    //     }
-    //     context.closePath();
-    //     this.setState({ drawing_counter: this.state.drawing_counter - 1 });
-    //   }
-    // }.bind(this));
   }
 
   static getDerivedStateFromProps(newProps, prevState) {

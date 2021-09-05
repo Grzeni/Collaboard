@@ -17,9 +17,6 @@ class MarkdownContainer extends React.Component {
             posiY: this.props.psY,
         }
     }
-    // componentWillReceiveProps(newProps) {
-    //     this.setState({textId: newProps.txtId, textValue: newProps.txtVal})
-    // }
 
     static getDerivedStateFromProps(newProps, prevState) {
         if (newProps.txtId !== prevState.textId || newProps.txtVal !== prevState.textValue) {
@@ -33,8 +30,6 @@ class MarkdownContainer extends React.Component {
 
     onDragStopFun(event, info) {
         console.log(info.node.id);
-        //this.setState({posiX: info.x, posiY: info.y})
-        //this.props.setLastPosition(info.x, info.y);
         let md = { id: info.node.id, xVal: info.x, yVal: info.y}; 
         socket.emit('text-moved', md);
     }
