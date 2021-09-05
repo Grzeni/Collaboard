@@ -28,7 +28,6 @@
     padding-right: 2px;
     padding-bottom: 1px;
     padding-left: 2px;
-    margin-right: 1%;
 }
 
 .ctrl_y_btn {
@@ -45,7 +44,6 @@
 }
 
 .colorPicker {
-    margin-left: 1%;
     height: 27px;
     width: 50px;
     padding-top: 1px;
@@ -100,7 +98,6 @@
 }
 
 .pSizeSelect {
-    margin-left: 0.5%;
     height: 27px;
     width: 50px;
     padding-top: 1px;
@@ -125,7 +122,6 @@
 }
 
 .eSizeSelect {
-    margin-left: 0.5%;
     height: 27px;
     width: 50px;
     padding-top: 1px;
