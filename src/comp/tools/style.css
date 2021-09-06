@@ -97,7 +97,7 @@
 
 .eraser-container {
     margin-left: 5%;
-    margin-right: 1%;
+    margin-right: 3%;
     align-content: center;
 }
 
@@ -144,7 +144,7 @@
 
 .p_btn .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 50px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -160,7 +160,7 @@
 
 .e_btn .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 50px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -174,7 +174,7 @@
     visibility: visible;
 }
 
-.e_btn .tooltiptext {
+.pSizeSelect .tooltiptext {
     visibility: hidden;
     width: 120px;
     background-color: black;
@@ -186,11 +186,27 @@
     z-index: 1;
 }
 
-.p_btn:hover .tooltiptext {
+.pSizeSelect .tooltiptext {
     visibility: visible;
 }
 
-.p_btn .tooltiptext {
+.save_btn .tooltiptext {
+    visibility: hidden;
+    width: 110px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+}
+
+.save-to-png:hover .tooltiptext {
+    visibility: visible;
+}
+
+.eSizeSelect .tooltiptext {
     visibility: hidden;
     width: 120px;
     background-color: black;
@@ -202,13 +218,13 @@
     z-index: 1;
 }
 
-.p_btn:hover .tooltiptext {
+.eSizeSelect:hover .tooltiptext {
     visibility: visible;
 }
 
-.p_btn .tooltiptext {
+.ctrl_z_btn .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 60px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -218,13 +234,13 @@
     z-index: 1;
 }
 
-.p_btn:hover .tooltiptext {
+.ctrl_z_btn:hover .tooltiptext {
     visibility: visible;
 }
 
-.p_btn .tooltiptext {
+.ctrl_y_btn .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 60px;
     background-color: black;
     color: #fff;
     text-align: center;
@@ -234,7 +250,38 @@
     z-index: 1;
 }
 
-.p_btn:hover .tooltiptext {
+.ctrl_y_btn:hover .tooltiptext {
     visibility: visible;
 }
 
+.markdownEditorBtn .tooltiptext {
+    visibility: hidden;
+    width: 100px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+}
+
+.markdownEditorBtn:hover .tooltiptext {
+    visibility: visible;
+}
+
+.collabBtn .tooltiptext {
+    visibility: hidden;
+    width: 75px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+}
+
+.collabBtn:hover .tooltiptext {
+    visibility: visible;
+}
