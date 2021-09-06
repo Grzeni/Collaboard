@@ -17,7 +17,7 @@ class MarkdownContainer extends React.Component {
             posiY: this.props.psY,
         }
     }
-
+    //update state based on props update
     static getDerivedStateFromProps(newProps, prevState) {
         if (newProps.txtId !== prevState.textId || newProps.txtVal !== prevState.textValue) {
             return {textId: newProps.txtId, textValue: newProps.txtVal};
@@ -27,7 +27,7 @@ class MarkdownContainer extends React.Component {
             return null;
         };
     }
-
+    //when the user drops an element after dragging it send info about the dragged element to the server
     onDragStopFun(event, info) {
         console.log(info.node.id);
         let md = { id: info.node.id, xVal: info.x, yVal: info.y}; 

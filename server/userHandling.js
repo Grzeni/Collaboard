@@ -1,5 +1,5 @@
 const users = [];
-
+//a collection of methods to handle users and rooms
 const addUser = ({ id, username, room }) => {
     console.log(username, room);
     const existingUser = users.find((user) => user.room === room && user.username === username);

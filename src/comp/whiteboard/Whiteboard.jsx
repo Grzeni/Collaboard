@@ -22,6 +22,7 @@ class Whiteboard extends React.Component {
 
   componentDidMount() {
     console.log(this.state.eventList);
+    //when a new user connects receive the event list from the server and process it
     socket.on('on-connect-emition', function (globalEventList) {
       console.log(globalEventList.event_array);
       let eventArray = globalEventList.event_array.map(e => {
@@ -34,6 +35,7 @@ class Whiteboard extends React.Component {
       });
       let sliced = eventArray.slice(0, globalEventList.pointer);
       let canv = document.getElementById('main_canvas');
+      //render all the drawings that have been already drawn on the whiteboard before the user connected
       for (const elem of sliced.filter(e => e.dataType === "drawing")) {
         elem.renderElement(canv);
       }
@@ -41,8 +43,10 @@ class Whiteboard extends React.Component {
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
 
+    //setup canvas settings and eventListeners for mouse-events
     this.draw();
     
+    //receive the event list updated with one drawing from a user
     socket.on('canvas-drawing-emit', function (globalEventList) {
       this.setState({ eventList: globalEventList.event_array });
       let canv = document.getElementById('main_canvas');
@@ -52,10 +56,12 @@ class Whiteboard extends React.Component {
       console.log(lastDrawing.length);
       console.log(lastDrawing);
       let lD = new Drawing(lastDrawing.color, lastDrawing.penSize, lastDrawing.eraserSize, lastDrawing.isEraserSelected, lastDrawing.pixelArray);
+      //render that drawing
       lD.renderElement(canv);
       this.setState({ drawing_counter: this.state.drawing_counter + 1 });
     }.bind(this));
 
+    //receive an undo request from the server
     socket.on('undo-request-from-server', function (globalEventList) {
       let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
       let eventArray = sliced.map(e => {
@@ -69,13 +75,16 @@ class Whiteboard extends React.Component {
       this.setState({ eventList: eventArray });
       let canv = document.getElementById('main_canvas');
       let context = canv.getContext('2d');
+      //clear the canvas
       context.fillStyle = 'white';
       context.fillRect(0, 0, canv.width, canv.height);
+      //render only the drawings that happened until the last undid element
       for (const elem of eventArray.filter(e => e.dataType === "drawing")) {
         elem.renderElement(canv);
       }
     }.bind(this));
 
+    //receive a redo request from the server
     socket.on('redo-request-from-server', function (globalEventList) {
       let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
       let eventArray = sliced.map(e => {
@@ -97,6 +106,7 @@ class Whiteboard extends React.Component {
     }.bind(this));
   }
 
+  //making sure that the state updates when properties change
   static getDerivedStateFromProps(newProps, prevState) {
     if (newProps.e_select !== prevState.e_select)
       return { e_select: newProps.e_select };
@@ -112,7 +122,7 @@ class Whiteboard extends React.Component {
       return null;
     }
   }
-
+  
   componentDidUpdate(prevProps, prevState) {
     if (this.props !== prevProps) {
       this.canvas_context.strokeStyle = this.state.e_select ? "white" : this.state.color;
@@ -139,10 +149,6 @@ class Whiteboard extends React.Component {
     canvas_context.lineCap = 'round';
     canvas_context.lineJoin = 'round';
     canvas_context.lineWidth = this.state.e_select ? this.state.e_size : this.state.p_size;
-    console.log('ustawiona jest wartość e_select na:', this.state.e_select);
-    console.log('ustawiona jest wartość color na:', this.state.color);
-    console.log('ustawiona jest wartość p_size na:', this.state.p_size);
-    console.log('ustawiona jest wartość e_size na:', this.state.e_size);
     canvas_context.strokeStyle = this.state.e_select ? "white" : this.state.color;
     canvas_context.fillStyle = 'white';
     //making sure that the canvas background is white so that when saving to a .png we don't get alpha channel background
@@ -164,6 +170,7 @@ class Whiteboard extends React.Component {
       var offsetX = e.pageX - canvas.offsetLeft;
       var offsetY = e.pageY - canvas.offsetTop;
       canvas_context.lineTo(offsetX, offsetY);
+      //push the pixels we are drawing over to the array
       drawing_data_array.push([offsetX, offsetY]);
       canvas_context.stroke();
 
@@ -178,6 +185,7 @@ class Whiteboard extends React.Component {
       var usedColor = root.state.color;
       var usedSize = root.state.p_size;
       var usedESize = root.state.e_size;
+      //construct the drawing object and send it to the server
       var drawing_data = new Drawing(usedColor, usedSize, usedESize, eSel, last_drawn_thing);
       console.log(drawing_data);
       drawing_data_array = [];

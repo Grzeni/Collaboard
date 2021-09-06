@@ -27,6 +27,7 @@ class WhiteboardContainer extends React.Component {
             drawing_data: [],
             lastMoved: null,
         }
+        //get the address bar parameters and send them to the server, check for errors
         const { room, username } = queryString.parse(window.location.search);
         console.log(room, username);
         socket.emit('new-user-connected', { username, room }, error => {
@@ -38,6 +39,7 @@ class WhiteboardContainer extends React.Component {
     }
 
     componentDidMount() {
+        //when a new user connects receive the event list from server and update the state based on it
         socket.on('on-connect-emition', function (globalEventList) {
             console.log('received global event list from the server', globalEventList);
             let eventArray = globalEventList.event_array.map(e => {
@@ -51,7 +53,7 @@ class WhiteboardContainer extends React.Component {
             let sliced = eventArray.slice(0, globalEventList.pointer);
             this.setState({ eventList: sliced }, () => console.log(this.state.eventList));
         }.bind(this));
-
+        //whenever a user does any sort of text operation receive the updated event list from server and update state
         socket.on('text-addition-emit', function (globalEventList) {
             console.log('we are receiving the globalEventList back from the server', globalEventList);
             let eventArray = globalEventList.event_array.map(e => {
@@ -83,7 +85,7 @@ class WhiteboardContainer extends React.Component {
             console.log('eventList after flattening and null verification', eventListToRender);
             this.setState({ eventList: eventListToRender });
         }.bind(this));
-
+        //handle undo request similarily to a normal text operation but slice the event list at the pointer value first
         socket.on('undo-request-from-server', function (globalEventList) {
             let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
             let eventArray = sliced.map(e => {
@@ -112,7 +114,7 @@ class WhiteboardContainer extends React.Component {
             let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
             this.setState({ eventList:  eventListToRender }, () => console.log(this.state.eventList));
         }.bind(this));
-
+        //handle redo request similarily to undo
         socket.on('redo-request-from-server', function (globalEventList) {
             let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
             let eventArray = sliced.map(e => {
@@ -207,7 +209,7 @@ class WhiteboardContainer extends React.Component {
         socket.emit('redo-request');
     }
 
-    //methods to handle text editor
+    //methods to handle text field
 
     textInputSelected() {
         this.setState({ text_input_selected: true });
@@ -226,7 +228,7 @@ class WhiteboardContainer extends React.Component {
         document.getElementById('main_canvas').style.marginLeft = "0px";
     }
 
-    //methods to handle markdown text rendering
+    //methods to handle markdown text manipulation
 
     addMarkdownDiv() {
         var t_a = document.getElementById('actual_text_area');
