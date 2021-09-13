@@ -11,12 +11,11 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server, {
     cors: {
-        origin: "https://quizzical-borg-ced3aa.netlify.app/"
+        origin: "https://quizzical-borg-ced3aa.netlify.app"
     }
 });
 
 app.use(cors());
-app.options("https://quizzical-borg-ced3aa.netlify.app/", cors());
 app.use(router);
 
 
