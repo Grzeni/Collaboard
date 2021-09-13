@@ -28,7 +28,7 @@ class WhiteboardContainer extends React.Component {
             lastMoved: null,
         }
         //get the address bar parameters and send them to the server, check for errors
-        const { room, username } = queryString.parse(window.location.search);
+        const { room, username} = queryString.parse(window.location.search);
         console.log(room, username);
         socket.emit('new-user-connected', { username, room }, error => {
             if (error) {
@@ -314,7 +314,6 @@ class WhiteboardContainer extends React.Component {
                         e_select={this.state.eraser_selected}
                         text_selected={this.state.text_input_detected}>
                     </Whiteboard>
-
                 </div>
             </div>
         )
