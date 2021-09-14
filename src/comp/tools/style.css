@@ -236,6 +236,7 @@
 
 .ctrl_z_btn:hover .tooltiptext {
     visibility: visible;
+    pointer-events: none;
 }
 
 .ctrl_y_btn .tooltiptext {
@@ -248,6 +249,7 @@
     padding: 5px 0;
     position: absolute;
     z-index: 1;
+    pointer-events: none;
 }
 
 .ctrl_y_btn:hover .tooltiptext {
