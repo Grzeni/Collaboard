@@ -189,14 +189,15 @@ class WhiteboardContainer extends React.Component {
     }
 
     copyInvite() {
-        let { room, username }  = queryString.parse(window.location.search);
-        console.log(room, username);
+        let { room , }  = queryString.parse(window.location.search);
         let link = `https://quizzical-borg-ced3aa.netlify.app/invite?room=${room}`;
-        let p = document.createElement('input');
-        p.style.visibility = "hidden";
-        p.value = link;
-        p.select();
-        document.execCommand("copy");
+        let p = navigator.clipboard.writeText(link);
+        p.then(function() {
+            //here we could fire off sth that makes it known that the thing has been copied
+            console.log('link copied to clipboard');
+        }, function() {
+            alert('clipboard write failuer');
+        });
     }
 
     undo() {
@@ -287,7 +288,8 @@ class WhiteboardContainer extends React.Component {
                     setPenSelected={this.setPenSelected.bind(this)}
                     saveToPng={this.saveToPng.bind(this)}
                     undoFun={this.undo.bind(this)}
-                    redoFun={this.redo.bind(this)}>
+                    redoFun={this.redo.bind(this)}
+                    copyInvite={this.copyInvite.bind(this)}>
                 </ToolSection>
 
                 <div id='whiteboard_container' className='whiteboard-container'>

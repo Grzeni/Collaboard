@@ -68,7 +68,7 @@ class ToolSection extends React.Component {
                     </button>
                 </span>
                 <span className="collabContainer">
-                    <button id='collabBtn' className='collabBtn' onClick={this.props.copyCollabLink}>
+                    <button id='collabBtn' className='collabBtn' onClick={this.props.copyInvite}>
                         <FaUserFriends></FaUserFriends>
                         <span className="tooltiptext">Collaborate</span>
                     </button>

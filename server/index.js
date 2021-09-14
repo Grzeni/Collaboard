@@ -9,7 +9,11 @@ const router = require('./router');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+const io = socketio(server, {
+    cors: {
+        origin: "http://localhost:3000"
+    }
+});
 
 app.use(cors());
 app.use(router);
