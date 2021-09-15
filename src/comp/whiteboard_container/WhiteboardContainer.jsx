@@ -42,7 +42,8 @@ class WhiteboardContainer extends React.Component {
         //when a new user connects receive the event list from server and update the state based on it
         socket.on('on-connect-emition', function (globalEventList) {
             console.log('received global event list from the server', globalEventList);
-            let eventArray = globalEventList.event_array.map(e => {
+            let sliced = globalEventList.event_array.slice(0, globalEventList.pointer);
+            let eventArray = sliced.map(e => {
                 if (e.dataType === "text") {
                     e = new Markdown(e.markdownId, e.markdownText, e.positionX, e.positionY, e.isDeleted);
                 } else {
@@ -50,8 +51,28 @@ class WhiteboardContainer extends React.Component {
                 }
                 return e;
             });
-            let sliced = eventArray.slice(0, globalEventList.pointer);
-            this.setState({ eventList: sliced }, () => console.log(this.state.eventList));
+            let filterByText = eventArray.filter(e => e.dataType === "text");
+            console.log("this is the event array filtered for only text", filterByText);
+            let hashSet = new Map();
+            console.log('hashset before procedure', hashSet);
+            for (let i = filterByText.length - 1; i >= 0; i--) {
+                let id = filterByText[i].markdownId;
+                if (hashSet.get(id) === undefined) {
+                    console.log(filterByText[i].isDeleted);
+                    if (filterByText[i].isDeleted === true) {
+                        console.log('this shit actually ran');
+                        hashSet.set(id, null);
+                    } else {
+                        hashSet.set(id, filterByText[i]);
+                    }
+                }
+            }
+            console.log('hashset after procedure', hashSet);
+            let eventListToRender = Array.from(hashSet).map(arr => arr[1]).filter(arr => arr !== null);
+            console.log('eventList after flattening and null verification', eventListToRender);
+            this.setState({ eventList: eventListToRender });
+
+            // this.setState({ eventList: sliced }, () => console.log(this.state.eventList));
         }.bind(this));
         //whenever a user does any sort of text operation receive the updated event list from server and update state
         socket.on('text-addition-emit', function (globalEventList) {
@@ -66,6 +87,7 @@ class WhiteboardContainer extends React.Component {
             });
 
             let filterByText = eventArray.filter(e => e.dataType === "text");
+            console.log("this is the event array filtered for only text", filterByText);
             let hashSet = new Map();
             console.log('hashset before procedure', hashSet);
             for (let i = filterByText.length - 1; i >= 0; i--) {
