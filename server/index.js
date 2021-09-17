@@ -26,6 +26,7 @@ let roomAssociatedEventListArray = new Map();
 io.on("connect", socket => {
     console.log("User online");
     console.log(socket.id);
+    console.log('server version:', "170920211313");
 
     //when a new user connects receive the user's username and room code and create a new user object
     socket.on('new-user-connected', ({ username, room }, callback) => {

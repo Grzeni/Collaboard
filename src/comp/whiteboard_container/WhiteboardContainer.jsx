@@ -30,6 +30,7 @@ class WhiteboardContainer extends React.Component {
         //get the address bar parameters and send them to the server, check for errors
         const { room, username} = queryString.parse(window.location.search);
         console.log(room, username);
+        console.log('app version:', "170920211314");
         socket.emit('new-user-connected', { username, room }, error => {
             if (error) {
                 alert(error);
