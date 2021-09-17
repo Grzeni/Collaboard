@@ -30,7 +30,7 @@ class WhiteboardContainer extends React.Component {
         //get the address bar parameters and send them to the server, check for errors
         const { room, username} = queryString.parse(window.location.search);
         console.log(room, username);
-        console.log('app version:', "170920211314");
+        console.log('app version:', "170920211453");
         socket.emit('new-user-connected', { username, room }, error => {
             if (error) {
                 alert(error);
@@ -61,7 +61,6 @@ class WhiteboardContainer extends React.Component {
                 if (hashSet.get(id) === undefined) {
                     console.log(filterByText[i].isDeleted);
                     if (filterByText[i].isDeleted === true) {
-                        console.log('this shit actually ran');
                         hashSet.set(id, null);
                     } else {
                         hashSet.set(id, filterByText[i]);
@@ -96,7 +95,6 @@ class WhiteboardContainer extends React.Component {
                 if (hashSet.get(id) === undefined) {
                     console.log(filterByText[i].isDeleted);
                     if (filterByText[i].isDeleted === true) {
-                        console.log('this shit actually ran');
                         hashSet.set(id, null);
                     } else {
                         hashSet.set(id, filterByText[i]);
@@ -155,7 +153,6 @@ class WhiteboardContainer extends React.Component {
                 if (hashSet.get(id) === undefined) {
                     console.log(filterByText[i].isDeleted);
                     if (filterByText[i].isDeleted === true) {
-                        console.log('this shit actually ran');
                         hashSet.set(id, null);
                     } else {
                         hashSet.set(id, filterByText[i]);
@@ -218,7 +215,7 @@ class WhiteboardContainer extends React.Component {
             //here we could fire off sth that makes it known that the thing has been copied
             console.log('link copied to clipboard');
         }, function() {
-            alert('clipboard write failuer');
+            alert('clipboard write failure');
         });
     }
 
