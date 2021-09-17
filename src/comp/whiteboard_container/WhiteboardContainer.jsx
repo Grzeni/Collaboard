@@ -127,7 +127,6 @@ class WhiteboardContainer extends React.Component {
                 if (hashSet.get(id) === undefined) {
                     console.log(filterByText[i].isDeleted);
                     if (filterByText[i].isDeleted === true) {
-                        console.log('this shit actually ran');
                         hashSet.set(id, null);
                     } else {
                         hashSet.set(id, filterByText[i]);
